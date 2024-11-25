@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const cors = require("cors");
-const http = require('http');
 const { ExpressError } = require('./expressError');
 const { NotFoundError } = require("./expressError");
 require('dotenv').config();
@@ -17,11 +16,11 @@ const USER = process.env.USER
 
 const pgp = require('pg-promise')(/* options */)
 const db = pgp(`postgres://${USER}:${password}@localhost:${PORT}/postgres`)
-// const db = require('./db.js')
+
 if (db) {
     console.log(db)
 }
-// db.connect()
+
 
 
 app.get('/', async (req, res, next) => {

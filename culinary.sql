@@ -41,8 +41,3 @@ ALTER TABLE recipes ALTER COLUMN id TYPE INTEGER;
 ALTER TABLE tags DROP COLUMN id;
 ALTER TABLE procedures DROP COLUMN id;
 ALTER TABLE procedures ALTER COLUMN procedure TYPE VARCHAR(250)
--- COPY tags TO STDOUT (DELIMITER ',');
--- COPY tags FROM './tags.csv';
-
--- COPY procedures TO STDOUT (DELIMITER ',');
--- COPY procedures FROM './procedure.csv';
