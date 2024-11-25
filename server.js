@@ -1,8 +1,10 @@
-// "use strict";
+"use strict";
 
 const app = require("./app");
+require('dotenv').config();
+const PORT = process.env.DATABASE_PORT
 
 
-app.listen(80, function () {
-  console.log(`Started on https://localhost:80`);
+app.listen(PORT, () => {
+  console.log(`Started on http://localhost:${PORT}`);
 });
