@@ -26,17 +26,13 @@ if (db) {
 app.get('/', async (req, res, next) => {
 
     try {
-        const results = await db.query(`SELECT name FROM recipes`);
-       
-        const name = results.rows
-     
+        const results = await db.query(`SELECT name FROM recipes ORDER BY id`);
         return res.send(results)
-        
     }
- catch(err) {
-    console.log(err)
-    return res.status(500).json({error : err})
- }
+    catch (err) {
+        console.log(err)
+        return res.status(500).json({ error: err })
+    }
 }
 )
 
