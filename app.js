@@ -7,16 +7,9 @@ const { NotFoundError } = require("./expressError");
 require('dotenv').config();
 const bodyParser = require('body-parser');
 
-app.use(express.json)
+// app.use(express.json)
 app.use(bodyParser.json())
 app.use(cors());
-
-const handleCors = (req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    next();
-   };
-app.use(handleCors)
 
 const password = process.env.PASSWORD
 const PORT = process.env.DATABASE_PORT
@@ -34,12 +27,11 @@ if (db) {
 app.get('/', async (req, res, next) => {
 
     try {
-        const results = await db.query(`SELECT * FROM recipes`);
-        console.log(res.status(200).json(results.rows))
+        const results = await db.query(`SELECT name FROM recipes`);
+       
         const name = results.rows
-        let allRecipes = []
-        allRecipes.push(results)
-        return allRecipes
+     
+        return res.send(results)
         
     }
  catch(err) {

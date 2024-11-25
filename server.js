@@ -2,7 +2,7 @@
 
 const app = require("./app");
 require('dotenv').config();
-const PORT = process.env.DATABASE_PORT
+const PORT = process.env.EXPRESS_PORT
 
 
 app.listen(PORT, () => {
