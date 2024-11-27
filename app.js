@@ -7,7 +7,7 @@ require('dotenv').config();
 const bodyParser = require('body-parser');
 
 // app.use(express.json)
-app.use(bodyParser.json())
+// app.use(bodyParser.json())
 app.use(cors());
 
 const password = process.env.PASSWORD
@@ -16,15 +16,10 @@ const USER = process.env.USER
 
 const pgp = require('pg-promise')(/* options */)
 const db = pgp(`postgres://${USER}:${password}@localhost:${PORT}/postgres`)
-
-if (db) {
-    console.log(db)
-}
-
-
+console.log(db)
 
 app.get('/', async (req, res, next) => {
-
+  
     try {
         const results = await db.query(`SELECT name FROM recipes ORDER BY id`);
         return res.send(results)
@@ -35,5 +30,26 @@ app.get('/', async (req, res, next) => {
     }
 }
 )
+
+app.get('/tags', async function (req, res, next) {
+  
+    console.log('route is hit!')
+   
+    console.log(req.query)
+    try {
+        const tag = req.query.id;
+        console.log(req.query.id)
+
+        // const ans = data.id
+        console.log(tag)
+        const results = await db.query(`SELECT name FROM recipes JOIN tags on recipes.id = tags.recipe_id WHERE tag = $1`, [tag]);
+        console.log(results)
+        return res.json(results)
+    } catch (err) {
+        return console.log(err)
+
+    }
+
+})
 
 module.exports = app;
