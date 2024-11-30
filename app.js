@@ -21,6 +21,7 @@ console.log(db)
 
 app.get('/', async (req, res, next) => {
   
+    console.log('load route hit')
     try {
         const results = await db.query(`SELECT * FROM recipes ORDER BY id`);
         return res.send(results)
@@ -38,6 +39,7 @@ app.get('/tags', async function (req, res, next) {
    
     const tag = req.query.ids;
     console.log(tag)
+   
     // let tag0 = tag[0]
     // console.log('tag0', tag0)
     // let tag1 = tag[1]
@@ -58,9 +60,25 @@ app.get('/tags', async function (req, res, next) {
         }
 
     
-    }
-    
+    });
 
-);
+app.get('/secondary', async function (req,res, next) {
+    console.log('second route is hit')
+
+    const secondTags = req.query.ids
+    console.log(secondTags)
+
+    try {
+        const results = await db.query(`SELECT DISTINCT(name) FROM recipes JOIN tags on recipes.id = tags.recipe_id WHERE tag = $1`, [secondTags]);
+        console.log(results)
+        return res.send(results)
+        }catch(err){
+            console.log(err)
+        }
+}
+)
+
+
+
 
 module.exports = app;
