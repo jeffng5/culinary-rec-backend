@@ -6,6 +6,7 @@ const { NotFoundError } = require("./expressError");
 require('dotenv').config();
 const bodyParser = require('body-parser');
 
+
 // app.use(express.json)
 // app.use(bodyParser.json())
 app.use(cors());
@@ -35,21 +36,31 @@ app.get('/tags', async function (req, res, next) {
   
     console.log('route is hit!')
    
-    console.log(req.query)
-    try {
-        const tag = req.query.id;
-        console.log(req.query.id)
+    const tag = req.query.ids;
+    console.log(tag)
+    // let tag0 = tag[0]
+    // console.log('tag0', tag0)
+    // let tag1 = tag[1]
+    // console.log('tag1', tag1)
+    // let tag2 = tag[2]
+    // console.log('tag2', tag2)
 
-        // const ans = data.id
-        console.log(tag)
-        const results = await db.query(`SELECT name FROM recipes JOIN tags on recipes.id = tags.recipe_id WHERE tag = $1`, [tag]);
+    // console.log(tag2)
+    // console.log('current Tag: ', tag[0], tag[1], tag[2])
+
+ 
+        try {
+        const results = await db.query(`SELECT DISTINCT(name) FROM recipes JOIN tags on recipes.id = tags.recipe_id WHERE tag = $1`, [tag]);
         console.log(results)
-        return res.json(results)
-    } catch (err) {
-        return console.log(err)
+        return res.send(results)
+        }catch(err){
+            console.log(err)
+        }
 
+    
     }
+    
 
-})
+);
 
 module.exports = app;
