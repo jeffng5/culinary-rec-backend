@@ -20,7 +20,7 @@ const db = pgp(`postgres://${USER}:${password}@localhost:${PORT}/postgres`)
 console.log(db)
 
 app.get('/', async (req, res, next) => {
-  
+
     console.log('load route hit')
     try {
         const results = await db.query(`SELECT * FROM recipes ORDER BY id`);
@@ -34,56 +34,31 @@ app.get('/', async (req, res, next) => {
 )
 
 app.get('/tags', async function (req, res, next) {
-  
-    console.log('route is hit!')
-   
-    const tag = req.query.ids;
 
-   
+    console.log('route is hit!')
+
+    const tag = req.query.ids;
 
     if (tag != undefined) {
         let flattenedTags = tag.flat()
         console.log('yes:', flattenedTags)
-    try {
-        const results = await db.query(`SELECT DISTINCT(name), tag FROM recipes JOIN tags on recipes.id = tags.recipe_id WHERE tag = $1 or tag = $2 or tag = $3 or tag = $4 or tag = $5 or tag = $6 or tag = $7 or tag = $8 or tag = $9 or tag = $10 or tag = $11 or tag = $12 or tag = $13 or tag =$14 or tag = $15 or tag = $16 ORDER BY tag` , [flattenedTags[0], flattenedTags[1], flattenedTags[2], flattenedTags[3], flattenedTags[4], flattenedTags[5], flattenedTags[6], flattenedTags[7], flattenedTags[8], flattenedTags[9], flattenedTags[10], flattenedTags[11], flattenedTags[12], flattenedTags[13], flattenedTags[14], flattenedTags[15]]);
-        console.log(results)
-        return res.send(results)
-        } catch(err){
+        try {
+            const results = await db.query(`SELECT DISTINCT(name), tag FROM recipes JOIN tags on recipes.id = tags.recipe_id WHERE tag = $1 or tag = $2 or tag = $3 or tag = $4 or tag = $5 or tag = $6 or tag = $7 or tag = $8 or tag = $9 or tag = $10 or tag = $11 or tag = $12 or tag = $13 or tag =$14 or tag = $15 or tag = $16 ORDER BY tag`, [flattenedTags[0], flattenedTags[1], flattenedTags[2], flattenedTags[3], flattenedTags[4], flattenedTags[5], flattenedTags[6], flattenedTags[7], flattenedTags[8], flattenedTags[9], flattenedTags[10], flattenedTags[11], flattenedTags[12], flattenedTags[13], flattenedTags[14], flattenedTags[15]]);
+            console.log(results)
+            return res.send(results)
+        } catch (err) {
             console.log(err)
-        }} 
-        if (tag == undefined) {
-            try {
-                const fallbackResults = await db.query(`SELECT name FROM recipes ORDER BY id`)
-                return res.send(fallbackResults)
-            } catch(err) {
-                console.log(err)
-            }
-            
-
         }
     }
-    
-
-
-        );
-
-app.get('/secondary', async function (req,res, next) {
-    console.log('second route is hit')
-
-    const secondTags = req.query.ids
-    console.log(secondTags)
-
-    try {
-        const results = await db.query(`SELECT DISTINCT(name) FROM recipes JOIN tags on recipes.id = tags.recipe_id WHERE tag = $1`, [secondTags]);
-        console.log(results)
-        return res.send(results)
-        }catch(err){
+    if (tag == undefined) {
+        try {
+            const fallbackResults = await db.query(`SELECT name FROM recipes ORDER BY id`)
+            return res.send(fallbackResults)
+        } catch (err) {
             console.log(err)
         }
+    }
 }
-)
-
-
-
+);
 
 module.exports = app;
