@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
     "kill-port": "^2.0.1",
     "pg-promise": "^11.10.2"
   },
