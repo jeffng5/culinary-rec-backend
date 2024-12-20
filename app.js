@@ -16,14 +16,16 @@ const PORT = process.env.DATABASE_PORT
 const USER = process.env.USER
 
 const pgp = require('pg-promise')(/* options */)
-const db = pgp(`postgres://${USER}:${password}@localhost:${PORT}/postgres`)
+const db = pgp(`postgres://${USER}:${password}@localhost:${PORT}/template1`)
 console.log(db)
 
 app.get('/', async (req, res, next) => {
 
     console.log('load route hit')
     try {
-        const results = await db.query(`SELECT * FROM recipes ORDER BY id`);
+        const results = await db.query(`SELECT name, image_url, images.recipe_id FROM recipes RIGHT JOIN images ON images.recipe_id = recipes.id ORDER BY recipes.id`);
+        console.log(results)
+        // image_url FROM recipes INNER JOIN images ON images.recipe_id = recipes.id ORDER BY recipes.id` );
         return res.send(results)
     }
     catch (err) {
@@ -60,5 +62,22 @@ app.get('/tags', async function (req, res, next) {
     }
 }
 );
+
+app.get('/individual', async function (req, res, next) {
+
+    console.log('THIS ROUTE IS Butta')
+    const name = req.query.ids
+    console.log(name)
+
+    try {
+        const results = await db.query(`SELECT recipes.name, procedures.recipe_id, step_no, procedure FROM recipes JOIN procedures ON recipes.id = procedures.recipe_id WHERE recipes.name = $1`, [name]);
+        console.log('IT WORKS?', results)
+        return res.send(results)
+    } catch (err){
+        console.error(err)
+    }
+    
+})
+
 
 module.exports = app;
