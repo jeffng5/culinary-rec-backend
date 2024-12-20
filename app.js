@@ -8,7 +8,7 @@ const bodyParser = require('body-parser');
 
 
 // app.use(express.json)
-// app.use(bodyParser.json())
+app.use(bodyParser.json())
 app.use(cors());
 
 const password = process.env.PASSWORD
@@ -63,14 +63,15 @@ app.get('/tags', async function (req, res, next) {
 }
 );
 
-app.get('/individual', async function (req, res, next) {
+app.get('/individual-recipes', async function (req, res) {
 
-    console.log('THIS ROUTE IS Butta')
+    console.log('route is correct')
     const name = req.query.ids
     console.log(name)
 
     try {
         const results = await db.query(`SELECT recipes.name, procedures.recipe_id, step_no, procedure FROM recipes JOIN procedures ON recipes.id = procedures.recipe_id WHERE recipes.name = $1`, [name]);
+
         console.log('IT WORKS?', results)
         return res.send(results)
     } catch (err){
