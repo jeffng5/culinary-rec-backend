@@ -10,6 +10,7 @@ const bodyParser = require('body-parser');
 // app.use(express.json)
 app.use(bodyParser.json())
 app.use(cors());
+app.use('/static', express.static('static'))
 
 const password = process.env.PASSWORD
 const PORT = process.env.DATABASE_PORT
@@ -25,7 +26,6 @@ app.get('/', async (req, res, next) => {
     try {
         const results = await db.query(`SELECT name, image_url, images.recipe_id FROM recipes RIGHT JOIN images ON images.recipe_id = recipes.id ORDER BY recipes.id`);
         console.log(results)
-        // image_url FROM recipes INNER JOIN images ON images.recipe_id = recipes.id ORDER BY recipes.id` );
         return res.send(results)
     }
     catch (err) {
@@ -70,7 +70,7 @@ app.get('/individual-recipes', async function (req, res) {
     console.log(name)
 
     try {
-        const results = await db.query(`SELECT recipes.name, procedures.recipe_id, step_no, procedure FROM recipes JOIN procedures ON recipes.id = procedures.recipe_id WHERE recipes.name = $1`, [name]);
+        const results = await db.query(`SELECT recipes.name, procedures.recipe_id, step_no, procedure, image_url FROM recipes JOIN procedures ON recipes.id = procedures.recipe_id JOIN images ON recipes.id = images.recipe_id WHERE recipes.name = $1 ORDER BY step_no`, [name]);
 
         console.log('IT WORKS?', results)
         return res.send(results)
