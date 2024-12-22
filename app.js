@@ -20,7 +20,7 @@ app.get('/', async (req, res, next) => {
 
     console.log('load route hit')
     try {
-        const results = await db.query(`SELECT name, image_url, images.recipe_id FROM recipes RIGHT JOIN images ON images.recipe_id = recipes.id ORDER BY recipes.id`);
+        const results = await db.query(`SELECT name, image_url, images.recipe_id FROM recipes LEFT JOIN images ON images.recipe_id = recipes.id ORDER BY recipes.id`);
         console.log(results)
         return res.send(results)
     }
@@ -41,7 +41,7 @@ app.get('/tags', async function (req, res, next) {
         let flattenedTags = tag.flat()
         console.log('yes:', flattenedTags)
         try {
-            const results = await db.query(`SELECT DISTINCT(name), tag FROM recipes JOIN tags on recipes.id = tags.recipe_id WHERE tag = $1 or tag = $2 or tag = $3 or tag = $4 or tag = $5 or tag = $6 or tag = $7 or tag = $8 or tag = $9 or tag = $10 or tag = $11 or tag = $12 or tag = $13 or tag =$14 or tag = $15 or tag = $16 ORDER BY tag`, [flattenedTags[0], flattenedTags[1], flattenedTags[2], flattenedTags[3], flattenedTags[4], flattenedTags[5], flattenedTags[6], flattenedTags[7], flattenedTags[8], flattenedTags[9], flattenedTags[10], flattenedTags[11], flattenedTags[12], flattenedTags[13], flattenedTags[14], flattenedTags[15]]);
+            const results = await db.query(`WITH table1 as (SELECT images.image_url, name, tag FROM recipes RIGHT JOIN tags on recipes.id = tags.recipe_id INNER JOIN images ON images.recipe_id = tags.recipe_id WHERE tag = $1 or tag = $2 or tag = $3 or tag = $4 or tag = $5 or tag = $6 or tag = $7 or tag = $8 or tag = $9 or tag = $10 or tag = $11 or tag = $12 or tag = $13 or tag =$14 or tag = $15 or tag = $16) SELECT DISTINCT(name), COUNT(name), image_url from table1 GROUP BY name, image_url HAVING COUNT(name) >= 1`, [flattenedTags[0], flattenedTags[1], flattenedTags[2], flattenedTags[3], flattenedTags[4], flattenedTags[5], flattenedTags[6], flattenedTags[7], flattenedTags[8], flattenedTags[9], flattenedTags[10], flattenedTags[11], flattenedTags[12], flattenedTags[13], flattenedTags[14], flattenedTags[15]]);
             console.log(results)
             return res.send(results)
         } catch (err) {
@@ -50,7 +50,7 @@ app.get('/tags', async function (req, res, next) {
     }
     if (tag == undefined) {
         try {
-            const fallbackResults = await db.query(`SELECT name FROM recipes ORDER BY id`)
+            const fallbackResults = await db.query(`SELECT name, image_url FROM recipes LEFT JOIN images ON recipes.id = images.recipe_id ORDER BY recipes.id`)
             return res.send(fallbackResults)
         } catch (err) {
             console.log(err)
