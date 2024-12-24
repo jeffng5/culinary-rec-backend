@@ -65,6 +65,8 @@ app.get('/individual-recipes', async function (req, res) {
     const name = req.query.ids
     console.log(name)
 
+
+
     try {
         const results = await db.query(`SELECT recipes.name, procedures.recipe_id, step_no, procedure, image_url FROM recipes JOIN procedures ON recipes.id = procedures.recipe_id JOIN images ON recipes.id = images.recipe_id WHERE recipes.name = $1 ORDER BY step_no`, [name]);
 
