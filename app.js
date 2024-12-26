@@ -20,7 +20,7 @@ app.get('/', async (req, res, next) => {
 
     console.log('load route hit')
     try {
-        const results = await db.query(`SELECT name, image_url, images.recipe_id FROM recipes LEFT JOIN images ON images.recipe_id = recipes.id ORDER BY recipes.id`);
+        const results = await db.query(`SELECT name, image_url, images.recipe_id FROM recipes JOIN images ON images.recipe_id = recipes.id ORDER BY recipes.id`);
         console.log(results)
         return res.send(results)
     }
@@ -64,8 +64,6 @@ app.get('/individual-recipes', async function (req, res) {
     console.log('route is correct')
     const name = req.query.ids
     console.log(name)
-
-
 
     try {
         const results = await db.query(`SELECT recipes.name, procedures.recipe_id, step_no, procedure, image_url FROM recipes JOIN procedures ON recipes.id = procedures.recipe_id JOIN images ON recipes.id = images.recipe_id WHERE recipes.name = $1 ORDER BY step_no`, [name]);
