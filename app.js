@@ -59,21 +59,16 @@ app.get('/tags', async function (req, res, next) {
 }
 );
 
-app.get('/individual-recipes', async function (req, res) {
+app.get('/individual-recipes', async function (req, res, next) {
 
+    const name = req.query.ids  
     console.log('route is correct')
-    const name = req.query.ids
-    console.log(name)
+    if (typeof name == "string"){
+        const results = await db.query(`SELECT recipes.name, procedures.recipe_id, procedures.step_no, procedures.procedure, images.image_url FROM recipes JOIN procedures ON recipes.id = procedures.recipe_id JOIN images ON recipes.id = images.recipe_id WHERE recipes.name = $1 ORDER BY step_no`, [name]);
 
-    try {
-        const results = await db.query(`SELECT recipes.name, procedures.recipe_id, step_no, procedure, image_url FROM recipes JOIN procedures ON recipes.id = procedures.recipe_id JOIN images ON recipes.id = images.recipe_id WHERE recipes.name = $1 ORDER BY step_no`, [name]);
-
-        console.log('IT WORKS?', results)
         return res.send(results)
-    } catch (err){
-        console.error(err)
-    }
-    
+   
+} ;    
 })
 
 
