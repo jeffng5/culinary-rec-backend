@@ -61,14 +61,26 @@ app.get('/tags', async function (req, res, next) {
 
 app.get('/individual-recipes', async function (req, res, next) {
 
-    const name = req.query.ids  
+    const name = req.query.ids
     console.log('route is correct')
-    if (typeof name == "string"){
+    if (typeof name == "string") {
         const results = await db.query(`SELECT recipes.name, procedures.recipe_id, procedures.step_no, procedures.procedure, images.image_url FROM recipes JOIN procedures ON recipes.id = procedures.recipe_id JOIN images ON recipes.id = images.recipe_id WHERE recipes.name = $1 ORDER BY step_no`, [name]);
 
         return res.send(results)
-   
-} ;    
+
+    };
+})
+
+app.get('/favorites', async function (req, res, next) {
+    console.log('You hit the favorites route')
+
+    try {
+        const results = await db.query(`SELECT recipes.name, images.image_url, images.recipe_id FROM recipes JOIN images ON images.recipe_id = recipes.id INNER JOIN favorites ON favorites.recipe_id = recipes.id ORDER BY recipes.id`);
+
+        return res.send(results)
+    } catch (err) {
+        console.log(err)
+    }
 })
 
 
