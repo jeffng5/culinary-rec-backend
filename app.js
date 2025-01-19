@@ -88,7 +88,7 @@ app.get('/favorites', async function (req, res, next) {
     console.log('You hit the favorites route')
 
     try {
-        const results = await db.query(`SELECT recipes.name, images.image_url, images.recipe_id FROM recipes JOIN images ON images.recipe_id = recipes.id INNER JOIN favorites ON favorites.recipe_id = recipes.id ORDER BY recipes.id`);
+        const results = await db.query(`SELECT DISTINCT recipes.id, recipes.name, image_url, images.recipe_id, COUNT(ratings.recipe_id) as divisor, sum(ratings.rating) as sumrating  FROM recipes LEFT JOIN images ON images.recipe_id = recipes.id LEFT JOIN ratings ON images.recipe_id = ratings.recipe_id WHERE images.image_url IS NOT NULL  GROUP BY recipes.id, recipes.name,images.image_url, images.recipe_id HAVING sum(ratings.rating) / COUNT(ratings.recipe_id) >= 4.25 ORDER BY recipes.id`);
 
         return res.send(results)
     } catch (err) {
