@@ -14,6 +14,8 @@ const USER = process.env.USER
 
 const pgp = require('pg-promise')(/* options */)
 const db = pgp(`postgres://${USER}:${password}@localhost:${PORT}/template1`)
+
+// const db = pgp('postgresql://postgres.zbrcmeznniryqcywbkiu:bgmYmFlZgXJ96xjF@aws-0-us-west-1.pooler.supabase.com:6543/postgres')
 console.log(db)
 
 app.get('/', async (req, res, next) => {

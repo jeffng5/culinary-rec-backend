@@ -1,11 +1,11 @@
 
-CREATE TABLE IF NOT EXISTS tags (
+CREATE TABLE tags (
     id BIGSERIAL PRIMARY KEY,
     recipe_id INTEGER REFERENCES recipes(id),
     tag TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS comments (
+CREATE TABLE comments (
     id BIGSERIAL PRIMARY KEY,
     recipe_id INTEGER REFERENCES recipes(id) ON DELETE CASCADE,
     comment_body TEXT NOT NULL,
@@ -13,25 +13,25 @@ CREATE TABLE IF NOT EXISTS comments (
     datetime timestamp with time zone
 );
 
-CREATE TABLE IF NOT EXISTS favorites (
+CREATE TABLE favorites (
     id BIGSERIAL PRIMARY KEY,
     recipe_id INTEGER REFERENCES recipes(id) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS ingredients (
+CREATE TABLE ingredients (
     id BIGSERIAL PRIMARY KEY,
     recipe_id INTEGER REFERENCES recipes(id) ON DELETE CASCADE,
     ingredient TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS procedures (
+CREATE TABLE procedures (
     id BIGSERIAL PRIMARY KEY,
     recipe_id INTEGER REFERENCES recipes(id) ON DELETE CASCADE,
     step_no INTEGER NOT NULL,
     procedure TEXT NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS images (
+CREATE TABLE images (
     id BIGSERIAL PRIMARY KEY,
     recipe_id INTEGER REFERENCES recipes(id) ON DELETE CASCADE,
     image_url TEXT NOT NULL
