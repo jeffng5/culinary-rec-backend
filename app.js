@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const serverless = require('serverless-http');
 const cors = require("cors");
 require('dotenv').config();
 const bodyParser = require('body-parser');
@@ -8,17 +9,18 @@ app.use(bodyParser.json())
 app.use(cors());
 app.use('/static', express.static('static'))
 
+const db_URL = process.env.DATABASE_URL
 const password = process.env.PASSWORD
 const PORT = process.env.DATABASE_PORT
 const USER = process.env.USER
 
 const pgp = require('pg-promise')(/* options */)
-const db = pgp(`postgres://${USER}:${password}@localhost:${PORT}/template1`)
+const db = pgp(`postgres://${USER}:${password}@${db_URL}:${PORT}/template1`)
 
-// const db = pgp('postgresql://postgres.zbrcmeznniryqcywbkiu:bgmYmFlZgXJ96xjF@aws-0-us-west-1.pooler.supabase.com:6543/postgres')
+// const db = pgp(`postgresql://postgres:${process.env.PWD}@db.wfjzfjgrnbkhssvvczib.supabase.co:5432/postgres`)
 console.log(db)
 
-app.get('/', async (req, res, next) => {
+app.get('/home', async (req, res, next) => {
 
     console.log('load route hit')
     try {
@@ -90,7 +92,7 @@ app.get('/favorites', async function (req, res, next) {
     console.log('You hit the favorites route')
 
     try {
-        const results = await db.query(`SELECT DISTINCT recipes.id, recipes.name, image_url, images.recipe_id, COUNT(ratings.recipe_id) as divisor, sum(ratings.rating) as sumrating  FROM recipes LEFT JOIN images ON images.recipe_id = recipes.id LEFT JOIN ratings ON images.recipe_id = ratings.recipe_id WHERE images.image_url IS NOT NULL  GROUP BY recipes.id, recipes.name,images.image_url, images.recipe_id HAVING sum(ratings.rating) / COUNT(ratings.recipe_id) >= 4.25 ORDER BY recipes.id`);
+        const results = await db.query(`SELECT DISTINCT recipes.id, recipes.name, image_url, images.recipe_id, COUNT(ratings.recipe_id) as divisor, sum(ratings.rating) as sumrating FROM recipes LEFT JOIN images ON images.recipe_id = recipes.id LEFT JOIN ratings ON images.recipe_id = ratings.recipe_id WHERE images.image_url IS NOT NULL GROUP BY recipes.id, recipes.name,images.image_url, images.recipe_id HAVING sum(ratings.rating) / COUNT(ratings.recipe_id) >= 4.25 ORDER BY recipes.id`);
 
         return res.send(results)
     } catch (err) {
